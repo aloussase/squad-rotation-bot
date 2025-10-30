@@ -1,4 +1,16 @@
 services:
+  bot:
+    image: "aloussase69/squad-rotation-bot"
+    build:
+      context: .
+    environment:
+      WEB_HOOK_URL: "${WEB_HOOK_URL:-https://example.com}"
+      DATABASE_URL: "${DB_URL:-postgresql://postgres:postgres@db:5432/postgres?application_name=squad_rotation_bot}"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+
   db:
     image: "postgres:17"
     restart: unless-stopped
