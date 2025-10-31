@@ -2,6 +2,7 @@ services:
   bot:
     image: "aloussase69/squad-rotation-bot"
     container_name: squad-rotation-bot
+    restart: unless-stopped
     build:
       context: .
     environment:
