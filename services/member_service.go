@@ -10,6 +10,9 @@ import (
 type MemberService interface {
 	// ListMembers / List all members of the squad.
 	ListMembers() ([]entities.SquadMember, error)
+
+	// Create a new member.
+	CreateMember(name, avatarUrl string) error
 }
 
 type memberServiceImpl struct {
@@ -21,6 +24,12 @@ func Create(conn *pgx.Conn) MemberService {
 	return &memberServiceImpl{
 		conn: conn,
 	}
+}
+
+func (ms *memberServiceImpl) CreateMember(name, avatarUrl string) error {
+	query := "insert into squad_members (full_name, avatar_url) values ($1, $2)"
+	_, err := ms.conn.Exec(context.Background(), query, name, avatarUrl)
+	return err
 }
 
 func (ms *memberServiceImpl) ListMembers() ([]entities.SquadMember, error) {
