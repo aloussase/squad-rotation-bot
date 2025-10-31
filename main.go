@@ -25,6 +25,7 @@ func connectDB(dbUrl string) *pgx.Conn {
 		if attempts == 2 {
 			log.Fatalf("There was an error while trying to connect to the database: %s", err)
 		}
+		log.Printf("Failed to connect to database, retrying in 3 seconds...")
 		time.Sleep(3 * time.Second)
 	}
 
@@ -58,6 +59,8 @@ func main() {
 		if messagingService.SendRotationNotification(chosenOne) != nil {
 			log.Fatalf("There was an error while trying to send a rotation: %s", err)
 		}
+
+		log.Printf("Succesfully sent rotation update: %s", chosenOne.FullName)
 	})
 
 	http.ListenAndServe(":8080", nil)
