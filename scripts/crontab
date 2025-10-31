@@ -1,1 +1,4 @@
-0 7 * * 1-5
+# The second field is the hour. It's in UTC, so make sure to use the correct
+# value for your TZ. For example, I am in Ecuador, which is UTC-5, so if I want
+# the bot to run at 7AM, I need to set the hour to 2AM (e.g. 2).
+0 2 * * 1-5 curl "http://bot:8080/api/v1/rotation/trigger" >> /var/log/cron.log 2>&1

@@ -1,18 +1,40 @@
 services:
   bot:
     image: "aloussase69/squad-rotation-bot"
+    container_name: squad-rotation-bot
     build:
       context: .
     environment:
       WEB_HOOK_URL: "${WEB_HOOK_URL:-https://example.com}"
       DATABASE_URL: "${DB_URL:-postgresql://postgres:postgres@db:5432/postgres?application_name=squad_rotation_bot}"
     ports:
-      - "8080:8080"
+      - "3000:8080"
     depends_on:
+      - db
+
+  cron:
+    image: "ubuntu:22.04"
+    container_name: cronjob
+    restart: unless-stopped
+    command: >
+      bash -c "
+        apt-get update && apt-get install -y cron curl
+        crontab /apps/crontab
+        crontab -l
+        touch /var/log/cron.log
+        cron
+        echo \"Date inside cron container is: $(date)\"
+        tail /var/log/cron.log -f
+      "
+    volumes:
+      - "./scripts/crontab:/apps/crontab"
+    depends_on:
+      - bot
       - db
 
   db:
     image: "postgres:17"
+    container_name: postgres_db
     restart: unless-stopped
     environment:
       POSTGRES_USER: "${DB_USER:-postgres}"
