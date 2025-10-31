@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/aloussase/squad-rotation-bot/api"
 	"github.com/aloussase/squad-rotation-bot/config"
 	"github.com/aloussase/squad-rotation-bot/services"
 	"github.com/jackc/pgx/v5"
@@ -45,22 +46,14 @@ func main() {
 	rotationService := services.CreateRotationService(conn)
 	messagingService := services.CreateMessagingService(config)
 
-	http.HandleFunc("/api/v1/rotation/trigger", func(w http.ResponseWriter, r *http.Request) {
-		members, err := memberService.ListMembers()
-		if err != nil {
-			log.Fatalf("There was an error while trying to list members: %s", err)
+	http.HandleFunc("/api/v1/rotation/trigger", api.TriggerBot(memberService, rotationService, messagingService))
+	http.HandleFunc("/api/v1/rotation/members", func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case http.MethodGet:
+			api.ListMembers(memberService, w, r)
+		case http.MethodPost:
+			api.CreateMember(memberService, w, r)
 		}
-
-		chosenOne, err := rotationService.ChooseNextInRotation(members)
-		if err != nil {
-			log.Fatalf("There was an error while trying to choose next in rotation: %s", err)
-		}
-
-		if messagingService.SendRotationNotification(chosenOne) != nil {
-			log.Fatalf("There was an error while trying to send a rotation: %s", err)
-		}
-
-		log.Printf("Succesfully sent rotation update: %s", chosenOne.FullName)
 	})
 
 	http.ListenAndServe(":8080", nil)
