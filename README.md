@@ -3,6 +3,14 @@
 This is a bot that you can integrate into your gchat spaces to send a message
 to indicate who's turn is it to facilitate the daily.
 
+## Pre-requisites
+
+This is an application that runs periodically on a scheduled time, so you will
+need to have some server where to run it.
+
+I personally run my instance on one of my Raspberries, but any hosted server
+should work as well. I can recommend [Hetzner](https://www.hetzner.com/).
+
 ## Configuring
 
 Make sure to configure the following according to your needs:
