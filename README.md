@@ -65,7 +65,7 @@ You can run it with the following command:
 docker run -it --network host aloussase69/squad-rotation-bot-cli
 ```
 
-TODO: demo
+![Squad Rotation Bot CLI Demo](./assets/Squad Rotation Bot - Demo.mp4)
 
 ## Contributing
 
